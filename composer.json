@@ -1,0 +1,34 @@
+{
+  "name": "sbordier44/pattern-observer",
+  "description": "PHP POO Design Pattern Observer",
+  "type": "library",
+  "license": "MIT",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "SBordier44",
+      "email": "slye@nubox.fr"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">= 8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "SBordier44\\Observer\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SBordier44\\Observer\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}
