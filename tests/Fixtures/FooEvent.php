@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace SBordier44\Observer\Tests\Fixtures;
 
-use Psr\EventDispatcher\StoppableEventInterface;
-
-class BarEvent implements StoppableEventInterface
+class FooEvent
 {
     public function __construct(private string $test)
     {
@@ -21,10 +19,5 @@ class BarEvent implements StoppableEventInterface
     {
         $this->test = $test;
         return $this;
-    }
-
-    public function isPropagationStopped(): bool
-    {
-        return true;
     }
 }
