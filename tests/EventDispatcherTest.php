@@ -7,31 +7,37 @@ namespace SBordier44\Observer\Tests;
 use PHPUnit\Framework\TestCase;
 use SBordier44\Observer\EventDispatcher;
 use SBordier44\Observer\Tests\Fixtures\BarEvent;
-use SBordier44\Observer\Tests\Fixtures\FooListener;
+use SBordier44\Observer\Tests\Fixtures\FooEvent;
+use SBordier44\Observer\Tests\Fixtures\ListenerProvider;
 
 class EventDispatcherTest extends TestCase
 {
-    public function testIfSuccessfulDispatchEvent(): void
+    private EventDispatcher $eventDispatcher;
+
+    public function setUp(): void
     {
-        // Dispatcher initialization
-        $eventDispatcher = new EventDispatcher();
+        $this->eventDispatcher = new EventDispatcher(new ListenerProvider());
+    }
 
-        // Event initialization
-        $event = new BarEvent('data.xyz');
+    public function testIfSuccessfulDispachEventWithoutStoppedPropagation(): void
+    {
+        $fooEvent = new FooEvent('hello foo');
 
-        // Listener initialization
-        $eventListener = new FooListener();
+        self::assertEquals('hello foo', $fooEvent->getTest());
 
-        // Attach listener to dispatcher
-        $eventDispatcher->attach(BarEvent::getName(), $eventListener);
+        $this->eventDispatcher->dispatch($fooEvent);
 
-        // Check if event is not changed
-        self::assertEquals('data.xyz', $event->getTest());
+        self::assertEquals('Hello Foo', $fooEvent->getTest());
+    }
 
-        // Dispach - Execute event
-        $eventDispatcher->dispatch(BarEvent::getName(), $event);
+    public function testIfSuccessfulDispachEventWithStoppedPropagation(): void
+    {
+        $barEvent = new BarEvent('hello bar');
 
-        // Check if event have new state after dispach
-        self::assertEquals('bar', $event->getTest());
+        self::assertEquals('hello bar', $barEvent->getTest());
+
+        $this->eventDispatcher->dispatch($barEvent);
+
+        self::assertEquals('Hello Bar 1', $barEvent->getTest());
     }
 }

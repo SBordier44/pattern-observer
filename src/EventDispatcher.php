@@ -4,19 +4,28 @@ declare(strict_types=1);
 
 namespace SBordier44\Observer;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
+
 class EventDispatcher implements EventDispatcherInterface
 {
-    private array $listeners = [];
-
-    public function dispatch(string $eventName, ?EventInterface $event): void
+    public function __construct(private ListenerProviderInterface $listenerProvider)
     {
-        foreach ($this->listeners[$eventName] as $listener) {
-            $listener->listen($event);
-        }
     }
 
-    public function attach(string $eventName, EventListenerInterface $listener): void
+    public function dispatch(object $event): void
     {
-        $this->listeners[$eventName][] = $listener;
+        foreach ($this->listenerProvider->getListenersForEvent($event) as $listener) {
+            $listener($event);
+
+            if (in_array(
+                    StoppableEventInterface::class,
+                    class_implements($event),
+                    true
+                ) && $event->isPropagationStopped()) {
+                break;
+            }
+        }
     }
 }
